@@ -1,4 +1,4 @@
-<!-- 
+/* 
 The MIT License (MIT)
 
 Copyright (c) 2013 Andrei Gonçalves Ribas <andrei.g.ribas@gmail.com>
@@ -20,9 +20,19 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
--->
-<beans xmlns="http://java.sun.com/xml/ns/javaee" 
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
-      http://java.sun.com/xml/ns/javaee/beans_1_1.xsd">
-</beans>
+*/
+/**
+ * 
+ */
+package com.andreiribas.cdi_weld_jpa2_example.dao;
+
+import com.andreiribas.cdi_weld_jpa2_example.domain.User;
+
+/**
+ * @author Andrei Gonçalves Ribas <andrei.g.ribas@gmail.com>
+ *
+ */
+public interface UserDao extends GenericDao<User, Long> {
+
+		
+}

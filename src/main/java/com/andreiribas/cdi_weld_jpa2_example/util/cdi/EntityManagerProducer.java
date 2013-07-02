@@ -1,4 +1,4 @@
-<!-- 
+/* 
 The MIT License (MIT)
 
 Copyright (c) 2013 Andrei Gonçalves Ribas <andrei.g.ribas@gmail.com>
@@ -20,9 +20,50 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
--->
-<beans xmlns="http://java.sun.com/xml/ns/javaee" 
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
-      http://java.sun.com/xml/ns/javaee/beans_1_1.xsd">
-</beans>
+*/
+/**
+ * 
+ */
+package com.andreiribas.cdi_weld_jpa2_example.util.cdi;
+
+import java.io.Serializable;
+
+import javax.enterprise.inject.Produces;
+import javax.inject.Singleton;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
+import org.apache.log4j.Logger;
+
+/**
+ * @author Andrei Goncalves Ribas <andrei.g.ribas@gmail.com>
+ *
+ */
+public class EntityManagerProducer implements Serializable {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6934038219040491371L;
+
+	private static final Logger LOGGER = Logger.getLogger(EntityManagerProducer.class);
+	
+	private static EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("TEST_DB");
+	
+	@Produces
+	@Singleton
+	public EntityManager createEntityManager() {
+		try {
+			return EntityManagerProducer.entityManagerFactory.createEntityManager();
+		} catch(RuntimeException re) {
+		
+			LOGGER.fatal("Error while creating EntityManager from EntityManagerFactory.", re);
+		
+			throw re;
+		
+		}
+		
+	}
+	
+}
