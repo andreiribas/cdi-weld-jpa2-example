@@ -27,6 +27,7 @@ THE SOFTWARE.
 package com.andreiribas.cdi_weld_jpa2_example.cdi.junit;
 
 import java.lang.reflect.Field;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -34,6 +35,7 @@ import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
+import org.junit.runners.model.TestClass;
 
 /**
  * @author Andrei Gonçalves Ribas <andrei.g.ribas@gmail.com>
@@ -41,9 +43,7 @@ import org.junit.runners.model.InitializationError;
  */
 public class WeldJUnit4Runner extends BlockJUnit4ClassRunner {
  
-    private final Class<?> testClass;
-    
-    private final Weld weld;
+	private final Weld weld;
     
     private final WeldContainer container;
  
@@ -51,16 +51,24 @@ public class WeldJUnit4Runner extends BlockJUnit4ClassRunner {
     	
         super(testClass);
         
-        this.testClass = testClass;
+        long startCdiTime = System.nanoTime();
         
         this.weld = new Weld();
         
         this.container = weld.initialize();
         
+        long endCdiTime = System.nanoTime();
+        
+        System.out.println(String.format("Weld setup in %d miliseconds.", TimeUnit.NANOSECONDS.toMillis(endCdiTime - startCdiTime)));
+        
     }
  
     @Override
     protected Object createTest() throws Exception {
+    	
+    	TestClass testClassJunitModel = getTestClass();
+    	
+    	Class<?> testClass = testClassJunitModel.getJavaClass();
     	
     	Object testInstance = testClass.newInstance();
     	
@@ -76,9 +84,15 @@ public class WeldJUnit4Runner extends BlockJUnit4ClassRunner {
         		
         		Class<?> fieldType = field.getType();
         		
-        		Object fieldValueInjectedFromWeld = container.instance().select(fieldType).get();
+        		long beanResolutionStartTime = System.nanoTime();
         		
-        		field.set(testInstance, fieldValueInjectedFromWeld);
+        		Object fieldValueInjectedFromCdi = container.instance().select(fieldType).get();
+        		        		
+        		long beanResolutionEndTime = System.nanoTime();
+        		
+        		System.out.println(String.format("Bean resolution of class %s in %d miliseconds.", fieldType.getSimpleName(), TimeUnit.NANOSECONDS.toMillis(beanResolutionEndTime - beanResolutionStartTime)));
+                
+        		field.set(testInstance, fieldValueInjectedFromCdi);
         	
         	}
         	
